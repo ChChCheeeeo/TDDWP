@@ -72,7 +72,7 @@ htmlcov
 *~
 *.bak
 *.swp
-__pycache__
+__pycache__/
 notes_test_driven_development.rst
 
 ####################
