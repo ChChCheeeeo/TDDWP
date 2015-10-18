@@ -33,6 +33,15 @@ class HomePageTest(TestCase):
         # call the function(s) being tested
         response = home_page(request)
 
+        # 1 check that one new Item has been saved to the database.
+        # objects.count() is a shorthand for objects.all().count().
+        # 2 objects.first() is the same as doing objects.all()[0].
+        # 3 # We check that the item’s text is correct. 
+
+        self.assertEqual(Item.objects.count(), 1)  #1
+        new_item = Item.objects.first()  #2
+        self.assertEqual(new_item.text, 'A new list item')  #3
+
         # check assertion
         self.assertIn('A new list item', response.content.decode())
         # check passed variable ends up in template
@@ -45,6 +54,10 @@ class HomePageTest(TestCase):
             {'new_item_text':  'A new list item'}
         )
         self.assertEqual(response.content.decode(), expected_html)
+    def test_home_page_only_saves_items_when_necessary(self):
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
 
 class ItemModelTest(TestCase):
 
