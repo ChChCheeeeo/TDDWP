@@ -3,8 +3,20 @@
         <title>To-Do lists</title>
     </head>
     <body>
+        <!--
+            To get our browser to send a POST request, we need to do two things:
+
+                Give the <input> element a name= attribute
+                Wrap it in a <form> tag with method="POST".
+
+        -->
         <h1>Your To-Do list</h1>
-        <input id="id_new_item" placeholder="Enter a to-do item" />
+        <form method="POST">
+            {% csrf_token %}
+            <input name="item_text" id="id_new_item" placeholder="Enter a to-do item" />
+        </form>
+
+<table id="id_list_table">
         <table id="id_list_table">
         </table>
     </body>
