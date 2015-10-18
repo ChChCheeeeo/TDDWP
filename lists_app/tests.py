@@ -34,3 +34,13 @@ class HomePageTest(TestCase):
 
         # check assertion
         self.assertIn('A new list item', response.content.decode())
+        # check passed variable ends up in template
+        # render_to_string function takes, as its second parameter, a
+        # mapping of variable names to values. We’re giving the
+        # template a variable named new_item_text, whose value is the
+        # expected item text from our POST request.
+        expected_html = render_to_string(
+        'home.html',
+            {'new_item_text':  'A new list item'}
+        )
+        self.assertEqual(response.content.decode(), expected_html)
