@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # third party
     # my apps
+    'lists_app',
 )
 
 MIDDLEWARE_CLASSES = (
