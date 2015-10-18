@@ -21,3 +21,16 @@ class HomePageTest(TestCase):
         # with strings, instead of bytes with bytes as we did earlier.
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
+    def test_home_page_can_save_a_POST_request(self):
+        # Use whitespace to:
+
+        # setup the test
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'A new list item'
+
+        # call the function(s) being tested
+        response = home_page(request)
+
+        # check assertion
+        self.assertIn('A new list item', response.content.decode())
