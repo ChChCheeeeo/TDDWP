@@ -42,6 +42,15 @@ class HomePageTest(TestCase):
         new_item = Item.objects.first()  #2
         self.assertEqual(new_item.text, 'A new list item')  #3
 
+    def test_home_page_redirects_after_POST(self):
+        
+        # setup the test
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'A new list item'
+
+        # call the function9s) being tested
+        response = home_page(request)
         # redirect after saving post
         # HTTP redirect,
         # points the browser towards a new location.
