@@ -91,3 +91,23 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
+
+class ListViewTest(TestCase):
+
+    def test_displays_all_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        # Instead of calling the view function directly, we use the
+        # Django test client, which is an attribute of the Django
+        # TestCase called self.client. We tell it to .get the URL
+        # we’re testing—it’s actually a very similar API to the one
+        # that Selenium uses. 
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+
+        # Instead of using the slightly annoying
+        # assertIn/response.content.decode() dance,
+        # Django provides the assertContains method which knows how
+        # to deal with responses and the bytes of their content. 
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
