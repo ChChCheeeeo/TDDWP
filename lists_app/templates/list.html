@@ -1,28 +1,23 @@
-<html>
-    <head>
-        <title>To-Do lists</title>
-    </head>
-    <body>
-        <!--
+{% extends 'base.html' %}
+
+<!--
             To get our browser to send a POST request, we need to do two things:
 
                 Give the <input> element a name= attribute
                 Wrap it in a <form> tag with method="POST".
 
-        -->
-        <h1>Your To-Do list</h1>
-        <form method="POST" action="/lists/{{ list.id }}/add_item">
-            {% csrf_token %}
-            <input name="item_text" id="id_new_item" placeholder="Enter a to-do item" />
-        </form>
+-->
+{% block header_text %}Your To-Do list{% endblock %}
 
-        <table id="id_list_table">
+{% block form_action %}/lists/{{ list.id }}/add_item{% endblock %}
+
+{% block table %}
+    <table id="id_list_table">
             <!--
                 .item_set is called a "reverse lookup"—it’s one of Django’s incredibly useful bits of ORM that lets you look up an object’s related items from a different table
             -->
-            {% for item in list.item_set.all %}
-                <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
-            {% endfor %}
-        </table>
-    </body>
-</html>
+        {% for item in list.item_set.all %}
+            <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}
