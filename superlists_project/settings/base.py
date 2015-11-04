@@ -42,7 +42,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     # default
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -114,3 +114,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+# static files folder shouldn’t be a part of your repository—we don’t want to put
+# it under source control, because it’s a duplicate of all the files that are
+# inside lists/static.
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../../static'))
