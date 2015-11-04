@@ -10,6 +10,7 @@
           When runserver sees the request, it knows that it’s for a static file because it begins with /static/. It then tries to find a file called bootstrap/css/bootstrap.min.css, looking in each of our app folders for subfolders called static, and it should find it at lists/static/bootstrap/css/bootstrap.min.css.
         -->
         <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/base.css" rel="stylesheet">
     </head>
     <body>
        <!--
@@ -22,11 +23,12 @@
       <div class="container">
 
           <div class="row">
-              <div class="col-md-6 col-md-offset-3">
+              <div class="col-md-6 col-md-offset-3 jumbotron">
                   <div class="text-center">
                       <h1>{% block header_text %}{% endblock %}</h1>
                       <form method="POST" action="{% block form_action %}{% endblock %}">
                           <input name="item_text" id="id_new_item"
+                                 class="form-control input-lg"
                                  placeholder="Enter a to-do item"
                           />
                           {% csrf_token %}
