@@ -3,9 +3,37 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+import sys
 
 # class NewVisitorTest(LiveServerTestCase):#unittest.TestCase):
 class NewVisitorTest(StaticLiveServerTestCase):
+
+    # LiveServerTestCase had certain limitations? Well, one is that it always
+    # assumes you want to use its own test server. I still want to be able to do
+    # that sometimes, but I also want to be able to selectively tell it not to
+    # bother, and to use a real server instead.
+    @classmethod
+    def setUpClass(cls):
+        # setUpClass is a similar method to setUp, also provided by unittest,
+        # which is used to do test setup for the whole class—that means it only
+        # gets executed once, rather than before every test method. This is where
+        # LiveServerTestCase/StaticLiveServerTestCase usually starts up its test
+        # server. 
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                # skip the normal setUpClass, and just store away our staging
+                # server URL in a variable called server_url instead. 
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        # if the for loop completes without finding a liveserver argument on the
+        # command-line, we do the normal superclass setup, and use the normal
+        # live_server_url.
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -22,7 +50,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
-        self.browser.get(self.live_server_url)#'http://localhost:8000')
+        self.browser.get(self.server_url)#'http://localhost:8000')
 
         # She notices the page title and header mention to-do lists
         self.assertIn('To-Do', self.browser.title)
@@ -68,7 +96,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Francis visits the home page.  There is no sign of Edith's
         # list
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
@@ -91,7 +119,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def test_layout_and_styling(self):
         # Edith goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.browser.set_window_size(1024, 768)
 
         # She notices the input box is nicely centered
