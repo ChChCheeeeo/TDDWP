@@ -20,11 +20,11 @@ def get_env_variable(var_name):
     except KeyError:
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
- 
-SECRET_KEY = get_env_variable('SECRET_KEY')
 
+# SECRET_KEY = get_env_variable('SECRET_KEY')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+SECRET_KEY='mf%cu4nb1(vzhrvyz+ll6rp42rz7h=trr97rc(_79xk$_=rl@m'
+DJANGO_SETTINGS_MODULE='superlists_project.settings.development'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -33,7 +33,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
