@@ -90,12 +90,12 @@ def _update_static_files(source_folder):
     # We use the virtualenv binaries foler whenever we need to run a Django
     # manage.py command, to make sure we get the virtualenv version of Django,
     # not the system one.
-    run('cd %s && ../virtualenv/bin/python3 manage.py collectstatic --noinput' % ( # 1
+    run('cd %s && ./virtualenv/bin/python3 manage.py collectstatic --noinput' % ( # 1
         source_folder,
     ))
 
 def _update_database(source_folder):
     # update the database with manage.py migrate
-    run('cd %s && ../virtualenv/bin/python3 manage.py migrate --noinput' % (
+    run('cd %s && ./virtualenv/bin/python3 manage.py migrate --noinput' % (
         source_folder,
     ))
