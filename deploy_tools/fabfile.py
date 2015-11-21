@@ -59,7 +59,7 @@ def _update_settings(source_folder, site_name):
         'ALLOWED_HOSTS =.+$',
         'ALLOWED_HOSTS = ["%s"]' % (site_name,)
     )
-    secret_key_file = source_folder + '/superlists_project/secret_key.py'
+    secret_key_file = source_folder + '/superlists_project/settings/secret_key.py'
     # It's good practice to make sure the secret key on the server
     # is different from the one in your (possibly public) source code
     # repo. This coe will generate a new key to import into settings,
