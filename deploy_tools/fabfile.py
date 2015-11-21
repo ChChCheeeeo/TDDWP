@@ -9,8 +9,7 @@ def deploy():
     # command line, eg, superlists.ottg.eu
     # tmpdomain-staging.tmpdomain.xyz
     # tmpdomain.xyz
-    # env.user will contain the username you’re using to log in to the server
-    # 
+    # env.user will contain the username you're using to log in to the server
     site_folder = '/home/%s/sites/%s' % (env.user, env.host)
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
@@ -18,7 +17,7 @@ def deploy():
     _update_settings(source_folder, env.host)
     _update_virtualenv(source_folder)
     _update_static_files(source_folder)
-    _update_database(source_folder
+    _update_database(source_folder)
 
 def _create_directory_structure_if_necessary(site_folder):
     # build directory structure, in a way that doesn’t fall down
