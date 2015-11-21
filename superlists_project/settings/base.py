@@ -90,8 +90,7 @@ WSGI_APPLICATION = 'superlists_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'Name': '/home/root_user_cheo_tdd/sites/tmpdomain-staging.tmpdomain.xyz/database/db.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, '../../../database/db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, '../../../../database/db.sqlite3'),
     }
 }
 
