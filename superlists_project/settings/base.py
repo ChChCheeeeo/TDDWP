@@ -116,4 +116,4 @@ STATIC_URL = '/static/'
 # static files folder shouldn’t be a part of your repository—we don’t want to put
 # it under source control, because it’s a duplicate of all the files that are
 # inside lists/static.
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../../static'))
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../static'))

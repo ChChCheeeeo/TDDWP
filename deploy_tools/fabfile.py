@@ -1,7 +1,8 @@
+
 from fabric.contrib.files import append, exists, sed
 from fabric.api import env, local, run
 import random
-
+env.key_filename = "~/.ssh/id_rsa"
 #REPO_URL = 'https://github.com/hjwp/book-example.git'
 REPO_URL = 'https://github.com/ChChCheeeeo/TDDWP.git'
 def deploy():
