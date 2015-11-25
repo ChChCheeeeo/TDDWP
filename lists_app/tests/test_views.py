@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from lists_app.views import home_page
 from django.template.loader import render_to_string
 from lists_app.models import Item, List
+from django.utils.html import escape
 
 class HomePageTest(TestCase):
 
@@ -34,14 +35,6 @@ class NewListTest(TestCase):
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-
-    # def test_redirects_after_POST(self):
-    #     response = self.client.post(
-    #         '/lists/new',
-    #         data={'item_text': 'A new list item'}
-    #     )
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
     def test_redirects_after_POST(self):
         # because the Django test client behaves slightly differently
         # to our pure view function; it’s using the full Django stack
@@ -54,6 +47,22 @@ class NewListTest(TestCase):
         )
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/%d/' % (new_list.id,))
+
+    def test_validation_errors_are_sent_back_to_home_page_template(self):
+        # URL and view for new lists will optionally render the same template
+        # as the home page, but with the addition of an error message
+        response = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'home.html')
+        expected_error = escape("You can't have an empty list item")
+        # expected_error = "You can't have an empty list item"
+        # print(response.content.decode())
+        self.assertContains(response, expected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
 
 class ListViewTest(TestCase):
 
@@ -77,6 +86,7 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'itemey 2')
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
+
     def test_passes_correct_list_to_template(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
