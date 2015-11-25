@@ -8,8 +8,11 @@
 
 -->
 {% block header_text %}Your To-Do list{% endblock %}
-
-{% block form_action %}/lists/{{ list.id }}/add_item{% endblock %}
+<!--
+    Combine one view and URL for displaying a list and one view and URL for processing additions to that list.
+-->
+{% block form_action %}/lists/{{ list.id }}/{% endblock %}
+<!-- { % block form_action % }/lists/{{ list.id }}/add_item{ % endblock % } -->
 
 {% block table %}
     <table id="id_list_table" class="table">
