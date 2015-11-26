@@ -1,0 +1,28 @@
+from django.test import TestCase
+
+from lists_app.forms import EMPTY_ITEM_ERROR, ItemForm
+
+
+class ItemFormTest(TestCase):
+
+    # def test_form_renders_item_text_input(self):
+    #     form = ItemForm()
+    #     # form.as_p() renders the form as HTML. This unit test is using a
+    #     # self.fail for some exploratory coding. You could just as easily
+    #     # use a manage.py shell session, although you’d need to keep
+    #     # reloading your code for each change.
+    #     self.fail(form.as_p())
+    def test_form_item_input_has_placeholder_and_css_classes(self):
+        form = ItemForm()
+        self.assertIn('placeholder="Enter a to-do item"', form.as_p())
+        self.assertIn('class="form-control input-lg"', form.as_p())
+    def test_form_validation_for_blank_items(self):
+        form = ItemForm(data={'text': ''})
+        # is_valid is an API function that checks form validation before we try
+        # and save any data
+        # .is_valid() returns True or False, but it also has the side effect of
+        # validating the input data, and populating the errors attribute.
+        # It’s a dictionary mapping the names of fields to lists of errors for
+        # those fields (it’s possible for a field to have more than one error).
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['text'], [EMPTY_ITEM_ERROR])
