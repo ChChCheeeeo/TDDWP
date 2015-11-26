@@ -11,7 +11,12 @@
 <!--
     Combine one view and URL for displaying a list and one view and URL for processing additions to that list.
 -->
-{% block form_action %}/lists/{{ list.id }}/{% endblock %}
+<!--{ % block form_action % }/lists/{ { list.id } }/{ % endblock % }-->
+<!--
+    You can replace the hardcoded URL with a Django template tag which refers to the URL’s "name"
+    url(r'^new$', views.new_list, name='new_list'),
+-->
+{% block form_action %}{% url 'view_list' list.id %}{% endblock %}
 <!-- { % block form_action % }/lists/{{ list.id }}/add_item{ % endblock % } -->
 
 {% block table %}

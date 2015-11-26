@@ -2,4 +2,10 @@
 
 {% block header_text %}Start a new To-Do list{% endblock %}
 
-{% block form_action %}/lists/new{% endblock %}
+
+<!-- { % block form_action % }/lists/new{ % endblock % }-->
+<!--
+    You can replace the hardcoded URL with a Django template tag which refers to the URL’s "name"
+    url(r'^new$', views.new_list, name='new_list'),
+-->
+{% block form_action %}{% url 'new_list' %}{% endblock %}
