@@ -27,17 +27,24 @@
                   <div class="text-center">
                       <h1>{% block header_text %}{% endblock %}</h1>
 
-                      <form method="POST" action="{% block form_action %}{% endblock %}">
+                          <form method="POST" action="{% block form_action %}{% endblock %}">
+                          <!--
+                            This is now using a template. { { form.text } } renders just the HTML input for the text field of the form.
+                          -->
+                            {{ form.text }}
+                            {% csrf_token %}
+                            {% if error %}
+                                <div class="form-group has-error">
+                      <!-- 
+                      <form method="POST" action="{ % block form_action % }{ % endblock % }">
                           <input name="item_text" id="id_new_item"
                                  class="form-control input-lg"
                                  placeholder="Enter a to-do item"
                           />
-                          {% csrf_token %}
-                          {% if error %}
+                      -->
                               <!--
                                 like empty lists or repeated entries.
                               -->
-                              <div class="form-group has-error">
                                   <span class="help-block">{{ error }}</span>
                               </div>
                           {% endif %}

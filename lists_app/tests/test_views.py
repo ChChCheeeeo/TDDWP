@@ -5,24 +5,43 @@ from lists_app.views import home_page
 from django.template.loader import render_to_string
 from lists_app.models import Item, List
 from django.utils.html import escape
+from lists_app.forms import ItemForm
 
 class HomePageTest(TestCase):
 
-    def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/')  #2
-        # resolve is the function Django uses internally to resolve]
-        # URLs, and find what view function they should map to. We’re
-        # checking that resolve, when called with “/”, the root of the
-        # site, finds a function called home_page. 
-        self.assertEqual(found.func, home_page)  #3
-    def test_home_page_returns_correct_html(self):
-        request = HttpRequest()
-        response = home_page(request)
-        # We use .decode() to convert the response.content bytes into
-        # a Python unicode string, which allows us to compare strings
-        # with strings, instead of bytes with bytes as we did earlier.
-        expected_html = render_to_string('home.html')
-        self.assertEqual(response.content.decode(), expected_html)
+    maxDiff = None
+
+    # def test_root_url_resolves_to_home_page_view(self):
+    #     found = resolve('/')  #2
+    #     # resolve is the function Django uses internally to resolve]
+    #     # URLs, and find what view function they should map to. We’re
+    #     # checking that resolve, when called with “/”, the root of the
+    #     # site, finds a function called home_page. 
+    #     self.assertEqual(found.func, home_page)  #3
+    # def test_home_page_returns_correct_html(self):
+    #     request = HttpRequest()
+    #     response = home_page(request)
+    #     # We use .decode() to convert the response.content bytes into
+    #     # a Python unicode string, which allows us to compare strings
+    #     # with strings, instead of bytes with bytes as we did earlier.
+    #     # expected_html = render_to_string('home.html')
+    #     # self.assertEqual(response.content.decode(), expected_html)
+    #     expected_html = render_to_string('home.html', {'form': ItemForm()})
+    #     # assertMultiLineEqual is useful for comparing long strings; it gives
+    #     # you a diff-style output, but it truncates long diffs by default
+    #     # use ith maxDiff
+    #     self.assertMultiLineEqual(response.content.decode(), expected_html)
+
+    def test_home_page_renders_home_template(self):
+        response = self.client.get('/')
+        # eplace our old manual test of the template
+        self.assertTemplateUsed(response, 'home.html') #1
+
+
+    def test_home_page_uses_item_form(self):
+        response = self.client.get('/')
+        # use assertIsInstance to check that our view uses the right kind of form
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 class NewListTest(TestCase):
 
