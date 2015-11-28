@@ -33,7 +33,10 @@
                           -->
                             {{ form.text }}
                             {% csrf_token %}
-                            {% if error %}
+                            <!--
+                            form.errors contains a list of all the errors for the form
+                            -->
+                            {% if form.errors %}
                                 <div class="form-group has-error">
                       <!-- 
                       <form method="POST" action="{ % block form_action % }{ % endblock % }">
@@ -44,8 +47,9 @@
                       -->
                               <!--
                                 like empty lists or repeated entries.
+                                form.text.errors is a list of just the errors for the text field
                               -->
-                                  <span class="help-block">{{ error }}</span>
+                                  <span class="help-block">{{ form.text.errors }}</span>
                               </div>
                           {% endif %}
                       </form>
