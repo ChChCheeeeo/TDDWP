@@ -35,18 +35,26 @@ def home_page(request):
 #     return redirect(list_)
     # return redirect('/lists/%d/' % (list_.id,))
     #return redirect('view_list', list_.id)
+# def new_list(request):
+#     # pass the request.POST data into the form’s constructor. 
+#     form = ItemForm(data=request.POST)
+#     if form.is_valid():
+#         list_ = List.objects.create()
+#         Item.objects.create(text=request.POST['text'], list=list_)
+#         return redirect(list_)
+#     else:
+#         # invalid - pass the form down to the template, instead of
+#         # our hardcoded error string
+#         return render(request, 'home.html', {"form": form})
 def new_list(request):
-    # pass the request.POST data into the form’s constructor. 
     form = ItemForm(data=request.POST)
     if form.is_valid():
         list_ = List.objects.create()
-        Item.objects.create(text=request.POST['text'], list=list_)
+        form.save(for_list=list_)
         return redirect(list_)
     else:
-        # invalid - pass the form down to the template, instead of
-        # our hardcoded error string
         return render(request, 'home.html', {"form": form})
-
+        
 # def view_list(request, list_id):
 #     list_ = List.objects.get(id=list_id)
 #     if request.method == 'POST':
@@ -76,18 +84,26 @@ def new_list(request):
         #     error = "You can't have an empty list item"
 
     # return render(request, 'list.html', {'list': list_, 'error': error})
+# def view_list(request, list_id):
+#     # You can&#39;t have an empty list item
+#     # found in as part of forms.
+#     list_ = List.objects.get(id=list_id)
+#     form = ItemForm()
+#     if request.method == 'POST':
+#         form = ItemForm(data=request.POST)
+#         if form.is_valid():
+#             Item.objects.create(text=request.POST['text'], list=list_)
+#             return redirect(list_)
+#     return render(request, 'list.html', {'list': list_, "form": form})
 def view_list(request, list_id):
-    # You can&#39;t have an empty list item
-    # found in as part of forms.
     list_ = List.objects.get(id=list_id)
     form = ItemForm()
     if request.method == 'POST':
         form = ItemForm(data=request.POST)
         if form.is_valid():
-            Item.objects.create(text=request.POST['text'], list=list_)
+            form.save(for_list=list_)
             return redirect(list_)
     return render(request, 'list.html', {'list': list_, "form": form})
-
 
 def add_item(request, list_id):
     list_ = List.objects.get(id=list_id)
