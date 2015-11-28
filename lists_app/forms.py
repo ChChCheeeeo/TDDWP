@@ -4,7 +4,7 @@ from lists_app.models import Item
 EMPTY_ITEM_ERROR = "You can't have an empty list item"
 
 # class ItemForm(forms.Form):
-#     item_text = forms.CharField(
+#     text = forms.CharField(
 #         # customise the input for a form field
 #         widget=forms.fields.TextInput(attrs={
 #             'placeholder': 'Enter a to-do item',
