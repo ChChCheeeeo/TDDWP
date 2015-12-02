@@ -9,5 +9,13 @@ class List(models.Model):
         return reverse('view_list', args=[self.id])
 
 class Item(models.Model):
-    text = models.TextField(default='')
+    # to get it deliberately wrong, include the unique constraint
+    text = models.TextField(default='')#, unique=True)
     list = models.ForeignKey(List, default=None)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        ordering = ('id',)
+        unique_together = ('list', 'text')
