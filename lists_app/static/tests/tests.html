@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Javascript tests</title>
+    <link rel="stylesheet" href="qunit.css">
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="qunit.js"></script>
+    <script>
+
+  /*
+    The test function defines a test case, a bit like def test_something(self) did in Python. Its first argument is a name for the test, and the second is a function for the body of the test.
+  */
+  test("smoke test", function () {
+      /*
+        The equal function is an assertion; very much like assertEqual,
+         it compares two arguments. Unlike in Python, though, the message is displayed both for failures and for passes
+      */
+      equal(1, 1, "Math works!");
+  });
+
+    </script>
+
+</body>
+</html>
