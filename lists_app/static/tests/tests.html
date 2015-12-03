@@ -8,20 +8,69 @@
 
 <body>
     <div id="qunit"></div>
-    <div id="qunit-fixture"></div>
-    <script src="qunit.js"></script>
-    <script>
+    <div id="qunit-fixture">
+            <!--
+        /*
+         // The <form> and its contents are there to represent what will be on the
+          real list page. 
+        */
+        Because QUnit tests do not run in a predictable order, so you can’t rely on the first test running before the second one, moving the form from outside the quint-fixture div to inside helps tidying up between tests because
+        jQuery resets the content of the fixtures div before each test.
+        -->
+        <form>
+            <input name="text" />
+            <div class="has-error">Error text</div>
+        </form>
+    </div>
 
-  /*
-    The test function defines a test case, a bit like def test_something(self) did in Python. Its first argument is a name for the test, and the second is a function for the body of the test.
-  */
-  test("smoke test", function () {
-      /*
+
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="qunit.js"></script>
+    <script src="../list.js"></script>
+    <script>
+    /*
+        The test function defines a test case, a bit like def test_something(self) did in Python. Its first argument is a name for the test, and the second is a function for the body of the test.
+      */
+    //test("smoke test", function () {
+       /*
         The equal function is an assertion; very much like assertEqual,
          it compares two arguments. Unlike in Python, though, the message is displayed both for failures and for passes
+
+         jQuery magic starts here! $ is the jQuery Swiss Army knife. It’s used to find bits of the DOM. Its first argument is a CSS selector; here, we’re telling it to find all elements that have the class ".has-error". It returns an object that represents one or more DOM elements. That, in turn, has various useful methods that allow us to manipulate or find out about those elements. 
+
+         One of which is .is, which can tell us whether an element matches a 
+         particular CSS property. Here we use :visible to check whether the
+          element is displayed or hidden. 
       */
-      equal(1, 1, "Math works!");
-  });
+      //  equal($('.has-error').is(':visible'), true);
+        /*
+            use jQuery’s .hide() method to hide the div. Behind the scenes, it dynamically sets a style="display: none" on the element.
+        */
+     //   $('.has-error').hide();
+        /*
+            check that it’s worked, with a second equal assertion
+        */
+    //    equal($('.has-error').is(':visible'), false);
+    //});
+/*
+    test("smoke test 2", function () {
+        equal($('.has-error').is(':visible'), true);
+        $('.has-error').hide();
+        equal($('.has-error').is(':visible'), false);
+    });
+*/
+
+    test("errors should be hidden on keypress", function () {
+        /*
+            The jQuery .trigger method is mainly used for testing. It says "fire off a JavScript DOM event on the element(s)". Here we use the keypress event, which is fired off by the browser behind the scenes whenever a user types something into a particular input element. 
+        */
+        $('input').trigger('keypress'); // 1
+        equal($('.has-error').is(':visible'), false);
+    });
+
+    test("errors not be hidden unless there is a keypress", function () {
+        equal($('.has-error').is(':visible'), true);
+    });
 
     </script>
 
