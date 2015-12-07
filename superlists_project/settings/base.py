@@ -108,6 +108,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+    },
+    'root': {'level': 'INFO'},
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -116,4 +132,10 @@ STATIC_URL = '/static/'
 # static files folder shouldn’t be a part of your repository—we don’t want to put
 # it under source control, because it’s a duplicate of all the files that are
 # inside lists/static.
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../static'))
+
+# STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../static'))
+# Make site-wide static files
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../static'))
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'superlists', 'static'),
+)
