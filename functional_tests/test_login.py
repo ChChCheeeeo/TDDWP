@@ -8,7 +8,7 @@ class LoginTest(FunctionalTest):
         # Edith goes to the awesome superlists site
         # and notices a "Sign in" link for the first time.
         self.browser.get(self.server_url)
-        self.browser.find_element_by_id('login').click()
+        self.browser.find_element_by_id('id_login').click()
 
         # A Persona login box appears
         # this does some waiting
@@ -23,7 +23,7 @@ class LoginTest(FunctionalTest):
         self.browser.find_element_by_id(
             'authentication_email'
         ).send_keys('edith@mockmyid.com')
-        self.browser.find_element_by_tag_name('button').click()
+        self.browser.find_element_by_tag_name('id_button').click()
 
         # The Persona window closes
         self.switch_to_new_window('To-Do')
