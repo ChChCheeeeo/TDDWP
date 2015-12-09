@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     # third party
     # my apps
     'lists_app',
+    'accounts_app',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -137,5 +138,5 @@ STATIC_URL = '/static/'
 # Make site-wide static files
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../static'))
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'superlists', 'static'),
+    os.path.join(BASE_DIR, 'superlists_project', 'static'),
 )

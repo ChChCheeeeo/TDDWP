@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Javascript tests</title>
+    <link rel="stylesheet" href="../../../superlists_project/static/tests/qunit.css">
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+        <a id="id_login">Sign in</a>
+    </div>
+
+
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="../../../superlists_project/static/tests/qunit.js"></script>
+    <script src="../../../superlists_project/static/tests/sinon.js"></script>
+    <script src="../accounts.js"></script>
+    <script>
+        /*
+            One of the best ways to understand this test, or indeed any test, is to work backwards. 
+        */
+
+        test("initialize binds sign in button to navigator.id.request", function () {
+            /*
+                equestWasCalled starts out as false and set later if called.
+            */
+            var requestWasCalled = false;
+            /*
+                mockRequestFunction, if called will simply set the value of the requestWasCalled variable to true. 
+            */
+            var mockRequestFunction = function () { requestWasCalled = true; };
+            /*
+                That’s defined as a generic JavaScript object, with an attribute called id which in turn has an attribute called request, which we’re assigning to a variable called mockRequestFunction. 
+            */
+            var mockNavigator = {
+                id: {
+                    request: mockRequestFunction,
+                    watch: function () {}
+                }
+            };
+            /*
+                Before triggering the click event, call our Superlists_Project.Accounts_App.initialize function, just like on the real page. Only difference is, instead of passing it the real global navigator object from Persona, we pass in a fake one called mockNavigator
+            */
+            Superlists_Project.Accounts_App.initialize(mockNavigator);
+            equal(requestWasCalled, false, 'check request not called before click');
+            /*
+                Called when a click event happens to the id_login element. 
+            */
+            $('#id_login').trigger('click');
+            /*
+                checking that, one way or another, the request function, as in navigator.id.request, was called
+            */
+            /*
+                Read the comments backwards.
+            */
+            equal(requestWasCalled, true, 'check request called after click');
+        }); // end test
+
+        test("initialize calls navigator.id.watch", function () {
+            var user = 'current user';
+            var token = 'csrf token';
+            var urls = {login: 'login url', logout: 'logout url'};
+            /*
+                 create a mock navigator object as before, but now instead of hand-crafting a function to mock out the function, use a sinon.mock() object. 
+
+                 object then records what happens to it inside special properties like calledOnce, which we can make assertions against.
+            */
+            var mockNavigator = {
+                id: {
+                    watch: sinon.mock(),
+                    //watch: function () {}
+                }
+            };
+
+            Superlists_Project.Accounts_App.initialize(mockNavigator, user, token, urls);
+
+            equal(
+                mockNavigator.id.watch.calledOnce,
+                true,
+                'check watch function called'
+            );
+        });
+
+        test("watch sees current user", function () {
+            var user = 'current user';
+            var token = 'csrf token';
+            var urls = {login: 'login url', logout: 'logout url'};
+            var mockNavigator = {
+                id: {
+                    watch: sinon.mock()
+                }
+            };
+
+            Superlists_Project.Accounts_App.initialize(mockNavigator, user, token, urls);
+            var watchCallArgs = mockNavigator.id.watch.firstCall.args[0];
+            equal(watchCallArgs.loggedInUser, user, 'check user');
+        });
+
+    </script>
+
+</body>
+</html>

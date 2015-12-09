@@ -73,6 +73,16 @@
 
       </div> <!-- class=container -->
       <script src="http://code.jquery.com/jquery.min.js"></script>
+      <script src="https://login.persona.org/include.js"></script>
+      <script src="/static/accounts.js"></script>
       <script src="/static/list.js"></script>
+      <script>
+          $(document).ready(function() {
+            /*
+               specified that our initialize function will be namespaced inside some nested objects, Superlists_Project.Accounts_App. JavaScript suffers from a programming model that’s tied into a global scope, and this sort of namespacing/naming convention helps to keep things under control. Lots of JavaScript libraries might want to call a function initialize, but very few will call it Superlists_Project.Accounts_App.initialize
+            */
+              Superlists_Project.Accounts_App.initialize(navigator)
+          });
+      </script>
     </body>
 </html>
