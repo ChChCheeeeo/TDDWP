@@ -9,15 +9,6 @@ var initialize = function (navigator, user, token, urls) {
         navigator.id.request();
     });
 
-    var urls = {
-        login: "{% url 'login' %}",
-        logout: "{% url 'logout' %}",
-    };
-
-    var currentUser = '{{ user.email }}' || null;
-    var csrf_token = '{{ csrf_token }}';
-    console.log(currentUser);
-
     navigator.id.watch({
       /*
         the watch function needs to know a couple of things from the
@@ -28,21 +19,21 @@ var initialize = function (navigator, user, token, urls) {
         current CSRF token, to pass in the Ajax POST request to the
          login view
       */
-      loggedInUser: user, //user,
+      loggedInUser: user,
       onlogin: function(assertion) {
-        $.post('/accounts/login', {assertion: assertion, csrfmiddlewaretoken: csrf_token})
-        .done(function() { window.location.reload(); })
-        .fail(function() { navigator.id.logout();});
+        $.post(
+          urls.login,
+          { assertion: assertion, csrfmiddlewaretoken: token }
+        )
+          .done(function () { window.location.reload(); })
+          .fail(function () { navigator.id.logout(); });
       },
-      onlogout: function() {
-        $.post('/accounts/logout')
-        .always(function() { window.location.reload(); });
-      }
-    });
+      onlogout: function () {}
+    }); // navigator.id.watch
 };
 
 window.Superlists_Project = {
     Accounts_App: {
         initialize: initialize
     }
-}
+};

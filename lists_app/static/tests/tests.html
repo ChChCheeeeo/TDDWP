@@ -64,7 +64,7 @@
         /*
             The jQuery .trigger method is mainly used for testing. It says "fire off a JavScript DOM event on the element(s)". Here we use the keypress event, which is fired off by the browser behind the scenes whenever a user types something into a particular input element. 
         */
-        $('input').trigger('keypress'); // 1
+        $('input').trigger('keypress');
         equal($('.has-error').is(':visible'), false);
     });
 
