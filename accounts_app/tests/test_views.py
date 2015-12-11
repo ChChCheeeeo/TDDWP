@@ -1,3 +1,5 @@
+from django.http import HttpRequest
+from accounts_app.views import persona_login
 from django.contrib.auth import get_user_model, SESSION_KEY
 from django.test import TestCase
 from unittest.mock import patch
@@ -48,3 +50,15 @@ class LoginViewTest(TestCase):
         # In the case where the user should not be authenticated,
         # the SESSION_KEY should not appear in their session. 
         self.assertNotIn(SESSION_KEY, self.client.session)
+    # An alternative way of testing that the Django login function
+    # was called correctly would be to mock it out too
+    @patch('accounts_app.views.login')
+    @patch('accounts_app.views.authenticate')
+    def test_calls_auth_login_if_authenticate_returns_a_user(
+        self, mock_authenticate, mock_login
+    ):
+        request = HttpRequest()
+        request.POST['assertion'] = 'asserted'
+        mock_user = mock_authenticate.return_value
+        persona_login(request)
+        mock_login.assert_called_once_with(request, mock_user)
