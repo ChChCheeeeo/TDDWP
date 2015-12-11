@@ -18,6 +18,14 @@ class AuthenticateTest(TestCase):
     # to use in all of the tests. 
     def setUp(self):
         self.backend = PersonaAuthenticationBackend()
+        self.backend = PersonaAuthenticationBackend()
+        user = User(email='other@user.com')
+        # By default, Django’s users have a username attribute,
+        # which has to be unique, so this value is just a placeholder
+        # to allow us to create multiple users. Later on, get rid of
+        # usernames in favour of using emails as the primary key. 
+        user.username = 'otheruser'
+        user.save()
 
 
     def test_sends_assertion_to_mozilla_with_domain(self, mock_post):
