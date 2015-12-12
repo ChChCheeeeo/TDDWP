@@ -23,14 +23,14 @@ class LoginTest(FunctionalTest):
         self.browser.find_element_by_id(
             'authentication_email'
         ).send_keys('edith@mockmyid.com')
-        self.browser.find_element_by_tag_name('id_button').click()
+        self.browser.find_element_by_tag_name('button').click()#id_button').click()
 
         # The Persona window closes
         self.switch_to_new_window('To-Do')
 
         # She can see that she is logged in
         # this does some waiting
-        self.wait_for_element_with_id('logout')
+        self.wait_for_element_with_id('id_logout')#logout')
         navbar = self.browser.find_element_by_css_selector('.navbar')
         self.assertIn('edith@mockmyid.com', navbar.text)
 
