@@ -140,3 +140,9 @@ LOGGING = {
     },
     'root': {'level': 'INFO'},
 }
+
+# why not accounts_app.models.User?
+AUTH_USER_MODEL = 'accounts_app.User'
+AUTHENTICATION_BACKENDS = (
+    'accounts_app.authentication.PersonaAuthenticationBackend',
+)
