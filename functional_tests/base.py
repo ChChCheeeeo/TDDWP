@@ -2,6 +2,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
+from .server_tools import reset_database
 
 import sys
 
@@ -20,21 +21,30 @@ class FunctionalTest(StaticLiveServerTestCase):
         # server. 
         for arg in sys.argv:
             if 'liveserver' in arg:
-                # skip the normal setUpClass, and just store away our staging
-                # server URL in a variable called server_url instead. 
-                cls.server_url = 'http://' + arg.split('=')[1]
+                # Instead of just storing cls.server_url, we also store the
+                # server_host and against_staging attributes if we detect the
+                # liveserver command-line argument. 
+                cls.server_host = arg.split('=')[1]
+                cls.server_url = 'http://' + cls.server_host
+                cls.against_staging = True
                 return
         # if the for loop completes without finding a liveserver argument on the
         # command-line, we do the normal superclass setup, and use the normal
         # live_server_url.
         super().setUpClass()
+        cls.against_staging = False
         cls.server_url = cls.live_server_url
+
+
     @classmethod
     def tearDownClass(cls):
-        if cls.server_url == cls.live_server_url:
+        if not cls.against_staging:
             super().tearDownClass()
 
     def setUp(self):
+        if self.against_staging:
+            #  resetting the server database in between each test.
+            reset_database(self.server_host)
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
 
