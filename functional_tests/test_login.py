@@ -1,4 +1,3 @@
-from selenium.webdriver.support.ui import WebDriverWait
 from .base import FunctionalTest
 import time
 
