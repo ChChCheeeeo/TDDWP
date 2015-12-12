@@ -51,6 +51,8 @@ INSTALLED_APPS = (
     # my apps
     'lists_app',
     'accounts_app',
+    # for management commands
+    'functional_tests',
 )
 
 MIDDLEWARE_CLASSES = (
