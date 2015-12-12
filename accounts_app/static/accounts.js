@@ -8,6 +8,9 @@ var initialize = function (navigator, user, token, urls) {
     $('#id_login').on('click', function () {
         navigator.id.request();
     });
+    $('#id_logout').on('click', function() {
+        navigator.id.logout();
+    });
 
     navigator.id.watch({
       /*
@@ -28,7 +31,14 @@ var initialize = function (navigator, user, token, urls) {
           .done(function () { window.location.reload(); })
           .fail(function () { navigator.id.logout(); });
       },
-      onlogout: function () {}
+      onlogout: function () {
+          $.post(
+            urls.logout,
+            { csrfmiddlewaretoken: token}
+          )
+            .done(function () { window.location.reload(); })
+            .fail(function () { navigator.id.logout(); });
+      } // onlogout
     }); // navigator.id.watch
 };
 
