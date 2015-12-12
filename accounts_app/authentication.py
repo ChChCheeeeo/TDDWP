@@ -19,3 +19,14 @@ class PersonaAuthenticationBackend(object):
                 return User.objects.get(email=email)
             except User.DoesNotExist:
                 return User.objects.create(email=email)
+
+
+    def get_user(self, email):
+        try:
+            return User.objects.get(email=email)
+        # You could just use pass here,
+        # since the function would return None by default.
+        # However, because we specifically need the function
+        # to return None, explicit is better than implicit here. 
+        except User.DoesNotExist:
+            return None
