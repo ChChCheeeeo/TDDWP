@@ -41,6 +41,7 @@ class AuthenticateTest(TestCase):
         # rather than setting up a load of duplicated boilerplate,
         # it’s more readable.
         mock_post.return_value.ok = False
+        mock_post.return_value.json.return_value = {}
         user = self.backend.authenticate('an assertion')
         self.assertIsNone(user)
 
