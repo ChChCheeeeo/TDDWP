@@ -146,3 +146,10 @@ AUTH_USER_MODEL = 'accounts_app.User'
 AUTHENTICATION_BACKENDS = (
     'accounts_app.authentication.PersonaAuthenticationBackend',
 )
+
+
+# This setting is changed by the deploy script
+DOMAIN = "localhost"
+
+ALLOWED_HOSTS = [DOMAIN]
+

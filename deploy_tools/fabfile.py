@@ -56,10 +56,11 @@ def _update_settings(source_folder, site_name):
     # and to create a new secret key
     settings_path = source_folder + '/superlists_project/settings/base.py'#settings.py'
     sed(settings_path, "DEBUG = True", "DEBUG = False")
-    sed(settings_path,
-        'ALLOWED_HOSTS =.+$',
-        'ALLOWED_HOSTS = ["%s"]' % (site_name,)
-    )
+    sed(settings_path, 'DOMAIN = "localhost"', 'DOMAIN = "%s"' % (site_name,))
+    # sed(settings_path,
+    #     'ALLOWED_HOSTS =.+$',
+    #     'ALLOWED_HOSTS = ["%s"]' % (site_name,)
+    # )
     secret_key_file = source_folder + '/superlists_project/settings/secret_key.py'
     # It's good practice to make sure the secret key on the server
     # is different from the one in your (possibly public) source code
