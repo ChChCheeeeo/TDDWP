@@ -121,7 +121,7 @@ STATIC_URL = '/static/'
 # Make site-wide static files
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../static'))
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static')#'superlists_project', 'static'),
+    os.path.join(BASE_DIR, 'static'), # I don't know #'superlists_project', 'static'),
 )
 
 LOGGING = {
