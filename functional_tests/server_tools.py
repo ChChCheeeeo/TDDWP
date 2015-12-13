@@ -1,7 +1,7 @@
 from os import path
 import subprocess
 THIS_FOLDER = path.dirname(path.abspath(__file__))
-print("This folder path is {}".format(THIS_FOLDER)
+print("This folder path is {}".format(THIS_FOLDER))
 # use the subprocess module to call some Fabric functions using the fab command.
 def create_session_on_server(host, email):
     return subprocess.check_output(
