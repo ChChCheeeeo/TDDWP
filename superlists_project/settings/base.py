@@ -126,6 +126,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'), # I don't know #'superlists_project', 'static'),
 )
 
+# Logging configuration is hierarchical, so you can define "parent" loggers for
+# top-level modules, and all the Python modules inside them will inherit
+# that config.
+# Now accounts_app.models, accounts_app.views, accounts_a[[.authentication,
+# and all the others will inherit the logging.StreamHandler from the parent
+# accounts_app logger.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -137,6 +143,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
+            'handlers': ['console'],
+        },
+        'accounts_app': {
+            'handlers': ['console'],
+        },
+        'lists_app': {
             'handlers': ['console'],
         },
     },

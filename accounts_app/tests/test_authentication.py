@@ -9,6 +9,9 @@ from accounts_app.authentication import (
     PERSONA_VERIFY_URL, PersonaAuthenticationBackend
 )
 
+import logging
+
+
 
 # You can apply a patch at the class level as well,
 # and that has the effect that every test method in the class will
@@ -69,6 +72,30 @@ class AuthenticateTest(TestCase):
         found_user = self.backend.authenticate('an assertion')
         new_user = User.objects.get(email='a@b.com')
         self.assertEqual(found_user, new_user)
+
+
+    def test_logs_non_okay_responses_from_persona(self, mock_post):
+        response_json = {
+            'status': 'not okay', 'reason': 'eg, audience mismatch'
+        }
+        # set up test with some data that should cause some logging
+        mock_post.return_value.ok = True
+        mock_post.return_value.json.return_value = response_json
+
+
+        # retrieve the actual logger for the module being tested 
+        logger = logging.getLogger('accounts_app.authentication')
+        # use patch.object to temporarily mock out its warning function,
+        # by using with to make it a context manager around the function
+        # being tested
+        with patch.object(logger, 'warning') as mock_log_warning:
+            self.backend.authenticate('an assertion')
+
+
+        # then it’s available to make assertions against
+        mock_log_warning.assert_called_once_with(
+            'Persona says no. Json was: {}'.format(response_json)
+        )
 
 
 class GetUserTest(TestCase):
