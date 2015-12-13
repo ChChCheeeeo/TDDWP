@@ -5,7 +5,7 @@ def _get_base_folder(host):
     return '~/sites/' + host
 
 def _get_manage_dot_py(host):
-    return '{path}/virtualenv/bin/python {path}/source/manage.py'.format(
+    return '{path}/virtualenv/venv_tdd_droplet_production/bin/python {path}/source/manage.py'.format(
         path=_get_base_folder(host)
     )
 
