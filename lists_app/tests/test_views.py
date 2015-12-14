@@ -2,7 +2,7 @@ from lists_app.forms import ItemForm, EMPTY_ITEM_ERROR
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
-from lists_app.views import home_page
+from lists_app.views import home_page, new_list
 from django.template.loader import render_to_string
 from lists_app.models import Item, List
 from django.utils.html import escape
@@ -104,6 +104,15 @@ class NewListTest(TestCase):
     def test_for_invalid_input_passes_form_to_template(self):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertIsInstance(response.context['form'], ItemForm)
+
+
+    def test_list_owner_is_saved_if_user_is_authenticated(self):
+        request = HttpRequest()
+        request.user = User.objects.create(email='a@b.com')
+        request.POST['text'] = 'new list item'
+        new_list(request)
+        list_ = List.objects.first()
+        self.assertEqual(list_.owner, request.user)
 
 class ListViewTest(TestCase):
 
