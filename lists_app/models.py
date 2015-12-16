@@ -4,6 +4,11 @@ from django.conf import settings
 
 class List(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    
+    @property
+    def name(self):
+        return self.item_set.first().text
+
     def get_absolute_url(self):
         # use it in the view—the redirect function just takes the object we
         # want to redirect to, and it uses get_absolute_url under the hood
