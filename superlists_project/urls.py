@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
+# from django.contrib import admin
 from lists_app import views as list_views
 from lists_app import urls as list_urls
 from accounts_app import urls as account_urls

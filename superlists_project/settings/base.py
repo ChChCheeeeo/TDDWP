@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from django.core.exceptions import ImproperlyConfigured
+# from django.core.exceptions import ImproperlyConfigured
  
 # def get_env_variable(var_name):
 #     try:
@@ -34,8 +34,10 @@ SECRET_KEY='mf%cu4nb1(vzhrvyz+ll6rp42rz7h=trr97rc(_79xk$_=rl@m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# This setting is changed by the deploy script
+DOMAIN = "localhost"
 
+ALLOWED_HOSTS = [DOMAIN]
 
 # Application definition
 
@@ -53,6 +55,12 @@ INSTALLED_APPS = (
     'accounts_app',
     # for management commands
     'functional_tests',
+)
+
+# why not accounts_app.models.User?
+AUTH_USER_MODEL = 'accounts_app.User'
+AUTHENTICATION_BACKENDS = (
+    'accounts_app.authentication.PersonaAuthenticationBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -154,16 +162,3 @@ LOGGING = {
     },
     'root': {'level': 'INFO'},
 }
-
-# why not accounts_app.models.User?
-AUTH_USER_MODEL = 'accounts_app.User'
-AUTHENTICATION_BACKENDS = (
-    'accounts_app.authentication.PersonaAuthenticationBackend',
-)
-
-
-# This setting is changed by the deploy script
-DOMAIN = "localhost"
-
-ALLOWED_HOSTS = [DOMAIN]
-
