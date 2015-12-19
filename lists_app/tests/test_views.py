@@ -1,5 +1,7 @@
+import unittest
 from unittest.mock import Mock, patch
 from lists_app.forms import ItemForm, EMPTY_ITEM_ERROR
+from lists_app.views import new_list, new_list2
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
@@ -51,7 +53,34 @@ class HomePageTest(TestCase):
         # use assertIsInstance to check that our view uses the right kind of form
         self.assertIsInstance(response.context['form'], ItemForm)
 
-class NewListTest(TestCase):
+# The Django TestCase class makes it too easy to write integrated tests.
+# As a way of making it "pure", isolated unit tests, 
+# only use unittest.TestCase
+# NewListForm class class is goign to be used in all tests, so mock it.
+@patch('lists_app.views.NewListForm')
+class NewListViewIntegratedTest(unittest.TestCase):
+
+    def setUp(self):
+        # set up a basic POST request in setUp,
+        # building up the request by hand rather than using the
+        # (overly integrated) Django Test Client. 
+        self.request = HttpRequest()
+        self.request.POST['text'] = 'new list item'
+        self.request.user = Mock()
+
+
+    def test_passes_POST_data_to_NewListForm(self, mockNewListForm):
+        # initialises its collaborator,
+        # the NewListForm, with the correct constructor—the data
+        # from the request. 
+        new_list2(self.request)
+        mockNewListForm.assert_called_once_with(data=self.request.POST)
+
+    def test_saves_form_with_owner_if_form_valid(self, mockNewListForm):
+        mock_form = mockNewListForm.return_value
+        mock_form.is_valid.return_value = True
+        new_list2(self.request)
+        mock_form.save.assert_called_once_with(owner=self.request.user)
 
     def test_saving_a_POST_request(self):
         self.client.post(
@@ -61,6 +90,7 @@ class NewListTest(TestCase):
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
+
 
     def test_redirects_after_POST(self):
         # because the Django test client behaves slightly differently
@@ -106,52 +136,56 @@ class NewListTest(TestCase):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertIsInstance(response.context['form'], ItemForm)
 
-    # mocking out the List class allows access to any lists
-    # created by the view. 
-    @patch('lists_app.views.List')
-    def test_list_owner_is_saved_if_user_is_authenticated(self, mockList):
-        # USING MOCKING
-
-        # create a real List object for the view to use. It has to be a real
-        # List object, otherwise the Item that the view is trying to save will
-        # fail with a foreign key error (this is an indication that the test is
-        # only partially isolated).
-        mock_list = List.objects.create()
-        mock_list.save = Mock()
-        mockList.return_value = mock_list
+    @unittest.skip
+    def test_list_owner_is_saved_if_user_is_authenticated(self):
         request = HttpRequest()
-        # real user on the request object
-        request.user = Mock() #User.objects.create()
-        request.user.is_authenticated.return_value = True
+        request.user = User.objects.create(email='a@b.com')
         request.POST['text'] = 'new list item'
-
-        # function that makes the assertion about the thing we want to happen
-        # first
-        def check_owner_assigned():
-            #  checking the list’s owner has been set.
-            self.assertEqual(mock_list.owner, request.user)
-
-        # assign that check function as a side_effect to the thing we want to
-        # check happened second. When the view calls our mocked save function,
-        # it will go through this assertion. We make sure to set this up before
-        # we actually call the function we’re testing. 
-        mock_list.save.side_effect = check_owner_assigned
         new_list(request)
+        list_ = List.objects.first()
+        self.assertEqual(list_.owner, request.user)
 
-        #  make sure that the function with the side_effect was actually
-        # triggered, ie we did .save(). Otherwise our assertion may actually
-        # never have been run.
-        mock_list.save.assert_called_once_with()
-        #  did the list have the .owner attribute set on it
-        # self.assertEqual(mock_list.owner, request.user)
+    # patch decorators are applied innermost first, so the new mock is
+    # injected to our method as before the mockNewListForm.
+    @patch('lists_app.views.redirect')
+    def test_redirects_to_form_returned_object_if_form_valid(
+        self, mock_redirect, mockNewListForm
+    ):
+        mock_form = mockNewListForm.return_value
+        # specify testing case where form is valid
+        mock_form.is_valid.return_value = True
 
-        # NOT USING MOCKING
-        # request = HttpRequest()
-        # request.user = User.objects.create(email='a@b.com')
-        # request.POST['text'] = 'new list item'
-        # new_list(request)
-        # list_ = List.objects.first()
-        # self.assertEqual(list_.owner, request.user)
+        response = new_list2(self.request)
+
+        # check view response is the result of the redirect function.
+        self.assertEqual(response, mock_redirect.return_value)
+        # check redirect function was called with the object that
+        # the form returns on save.
+        mock_redirect.assert_called_once_with(mock_form.save.return_value)
+
+    @patch('lists_app.views.render')
+    def test_renders_home_template_with_form_if_form_invalid(
+        self, mock_render, mockNewListForm
+    ):
+        mock_form = mockNewListForm.return_value
+        mock_form.is_valid.return_value = False
+
+        response = new_list2(self.request)
+
+        self.assertEqual(response, mock_render.return_value)
+        # When using assert methods on mocks, like assert_called_ once_with,
+        # it’s doubly important to make sure you run the test and see it fail.
+        # It’s all too easy to make a typo in your assert function name and end
+        # up calling a mock method that does nothing.
+        mock_render.assert_called_once_with(
+            self.request, 'home.html', {'form': mock_form}
+        )
+
+    def test_does_not_save_if_form_invalid(self, mockNewListForm):
+        mock_form = mockNewListForm.return_value
+        mock_form.is_valid.return_value = False
+        new_list2(self.request)
+        self.assertFalse(mock_form.save.called)
 
 class ListViewTest(TestCase):
 
