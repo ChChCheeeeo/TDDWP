@@ -24,6 +24,10 @@ class Item(models.Model):
     def __str__(self):
         return self.text
 
+    @property
+    def name(self):
+        return self.item_set.first().text
+
     class Meta:
         ordering = ('id',)
         unique_together = ('list', 'text')
