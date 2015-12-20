@@ -15,6 +15,7 @@ class ItemModelsTest(TestCase):
         item.list = list_
         item.save()
         self.assertIn(item, list_.item_set.all())
+
     def test_cannot_save_empty_list_items(self):
 
         # tries to create a blank list item
@@ -23,6 +24,7 @@ class ItemModelsTest(TestCase):
         with self.assertRaises(ValidationError):
             item.save()
             item.full_clean()
+
     def test_duplicate_items_are_invalid(self):
         list_ = List.objects.create()
 
@@ -39,6 +41,7 @@ class ItemModelsTest(TestCase):
         Item.objects.create(list=list1, text='bla') # test_create_returns_new_list_object
         item = Item(list=list2, text='bla')
         item.full_clean()  # should not raise
+
     def test_list_ordering(self):
         list1 = List.objects.create()
 
@@ -50,6 +53,7 @@ class ItemModelsTest(TestCase):
             list(Item.objects.all()),
             [item1, item2, item3]
         )
+
     def test_string_representation(self):
         item = Item(text='some text')
         self.assertEqual(str(item), 'some text')
@@ -60,6 +64,17 @@ class ListModelTest(TestCase):
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), '/lists/%d/' % (list_.id,))
 
+    def test_lists_can_have_owners(self):
+        List(owner=User())  # should not raise
+
+    def test_list_owner_is_optional(self):
+        List().full_clean()  # should not raise
+
+    def test_list_name_is_first_item_text(self):
+        list_ = List.objects.create()
+        Item.objects.create(list=list_, text='first item')
+        Item.objects.create(list=list_, text='second item')
+        self.assertEqual(list_.name, 'first item')
 
     def test_create_new_creates_list_and_first_item(self):
         List.create_new(first_item_text='new item text')
@@ -74,19 +89,7 @@ class ListModelTest(TestCase):
         new_list = List.objects.first()
         self.assertEqual(new_list.owner, user)
 
-    def test_lists_can_have_owners(self):
-        List(owner=User())  # should not raise
-
-    def test_list_owner_is_optional(self):
-        List().full_clean()  # should not raise
-
     def test_create_returns_new_list_object(self):
         returned = List.create_new(first_item_text='new item text')
         new_list = List.objects.first()
         self.assertEqual(returned, new_list)
-
-    def test_list_name_is_first_item_text(self):
-        list_ = List.objects.create()
-        Item.objects.create(list=list_, text='first item')
-        Item.objects.create(list=list_, text='second item')
-        self.assertEqual(list_.name, 'first item')
