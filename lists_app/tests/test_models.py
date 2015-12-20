@@ -3,10 +3,6 @@ from django.test import TestCase
 from lists_app.models import Item, List
 from django.contrib.auth import get_user_model
 User = get_user_model()
-<<<<<<< HEAD
-
-=======
->>>>>>> more_isolation
 
 class ItemModelsTest(TestCase):
     def test_default_text(self):
@@ -69,27 +65,20 @@ class ListModelTest(TestCase):
         self.assertEqual(list_.get_absolute_url(), '/lists/%d/' % (list_.id,))
 
     def test_lists_can_have_owners(self):
-<<<<<<< HEAD
-        user = User.objects.create(email='a@b.com')
-        list_ = List.objects.create(owner=user)
-        self.assertIn(list_, user.list_set.all())
+        List(owner=User()) # should not raise
 
     def test_list_owner_is_optional(self):
-        List.objects.create()  # should not raise
-=======
         List(owner=User())  # should not raise
 
     def test_list_owner_is_optional(self):
         List().full_clean()  # should not raise
->>>>>>> more_isolation
+
 
     def test_list_name_is_first_item_text(self):
         list_ = List.objects.create()
         Item.objects.create(list=list_, text='first item')
         Item.objects.create(list=list_, text='second item')
-<<<<<<< HEAD
-        self.assertEqual(list_.name, 'first item')
-=======
+
         self.assertEqual(list_.name, 'first item')
 
     def test_create_new_creates_list_and_first_item(self):
@@ -109,4 +98,3 @@ class ListModelTest(TestCase):
         returned = List.create_new(first_item_text='new item text')
         new_list = List.objects.first()
         self.assertEqual(returned, new_list)
->>>>>>> more_isolation

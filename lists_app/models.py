@@ -4,25 +4,16 @@ from django.conf import settings
 
 class List(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-<<<<<<< HEAD
-    
-    @property
-    def name(self):
-        return self.item_set.first().text
 
-=======
->>>>>>> more_isolation
     def get_absolute_url(self):
         # use it in the view—the redirect function just takes the object we
         # want to redirect to, and it uses get_absolute_url under the hood
         # automagically
         return reverse('view_list', args=[self.id])
 
-
     @property
     def name(self):
         return self.item_set.first().text
-
 
     @staticmethod
     def create_new(first_item_text, owner=None):
@@ -35,9 +26,9 @@ class Item(models.Model):
     text = models.TextField(default='')#, unique=True)
     list = models.ForeignKey(List, default=None)
 
-    def __str__(self):
-        return self.text
-
     class Meta:
         ordering = ('id',)
         unique_together = ('list', 'text')
+
+    def __str__(self):
+        return self.text

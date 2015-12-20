@@ -47,13 +47,12 @@ class LoginViewTest(TestCase):
         user.backend = '' # required for auth_login o work
         mock_authenticate.return_value = user
         self.client.post('/accounts/login', {'assertion': 'a'})
-<<<<<<< HEAD
+
         # The Django test client keeps track of the session for its user.
         # For the case where the user gets authenticated successfully, 
         # check that their user ID (the primary key, or pk) is associated
         # with their session. 
-        # self.assertEqual(self.client.session[SESSION_KEY], str(user.pk))
-        self.assertEqual(response.content.decode(), 'OK')
+        self.assertEqual(self.client.session[SESSION_KEY], str(user.pk))
     
     # An alternative way of testing that the Django login function
     # was called correctly would be to mock it out too
@@ -69,18 +68,6 @@ class LoginViewTest(TestCase):
     #     mock_user = mock_authenticate.return_value
     #     persona_login(request)
     #     mock_login.assert_called_once_with(request, mock_user)
-
-    @patch('accounts_app.views.authenticate')
-    def test_gets_logged_in_session_if_authenticate_returns_a_user(
-        self, mock_authenticate
-    ):
-        user = User.objects.create(email='a@b.com')
-        user.backend = ''  # required for auth_login to work
-        mock_authenticate.return_value = user
-        self.client.post('/accounts/login', {'assertion': 'a'})
-=======
->>>>>>> more_isolation
-        self.assertEqual(self.client.session[SESSION_KEY], str(user.pk))
 
     @patch('accounts_app.views.authenticate')
     def test_does_not_get_logged_in_if_authenticate_returns_None(
