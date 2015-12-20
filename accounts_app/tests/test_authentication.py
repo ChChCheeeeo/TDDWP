@@ -23,7 +23,6 @@ class AuthenticateTest(TestCase):
     # to use in all of the tests. 
     def setUp(self):
         self.backend = PersonaAuthenticationBackend()
-        self.backend = PersonaAuthenticationBackend()
         user = User(email='other@user.com')
         # By default, Django’s users have a username attribute,
         # which has to be unique, so this value is just a placeholder

@@ -1,3 +1,4 @@
+import time
 from django.conf import settings
 from .base import FunctionalTest
 from .server_tools import create_session_on_server
@@ -37,6 +38,7 @@ class MyListsTest(FunctionalTest):
 
         # She sees that her list is in there, named according to its
         # first list item
+        time.sleep(3)
         self.browser.find_element_by_link_text('Reticulate splines').click()
         self.assertEqual(self.browser.current_url, first_list_url)
         print("\n current browser url is {} \n current list url is {}".
@@ -51,9 +53,13 @@ class MyListsTest(FunctionalTest):
         print("Cows The second list url is {}".format(second_list_url))
 
         # Under "my lists", her new list appears
+        time.sleep(3)
         self.browser.find_element_by_link_text('My lists').click()
+<<<<<<< HEAD
         print("After finding My lists, the url is now {}".format(
             self.server_url))
+=======
+>>>>>>> more_isolation
         time.sleep(3)
         self.browser.find_element_by_link_text('Click cows').click()
         print("After clicking Click cows, the url is now {}".format(
@@ -63,6 +69,7 @@ class MyListsTest(FunctionalTest):
             format(self.browser.current_url, second_list_url))
 
         # She logs out.  The "My lists" option disappears
+        time.sleep(3)
         self.browser.find_element_by_id('id_logout').click()
         
         self.assertEqual(

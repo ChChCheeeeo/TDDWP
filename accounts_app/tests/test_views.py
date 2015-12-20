@@ -28,6 +28,7 @@ class LoginViewTest(TestCase):
         # Mocks can make assertions. In this case, they can check whether
         # they were called, and what with. 
         mock_authenticate.assert_called_once_with(assertion='assert this')
+
     @patch('accounts_app.views.authenticate')
     def test_returns_OK_when_user_found(
         self, mock_authenticate
@@ -35,7 +36,18 @@ class LoginViewTest(TestCase):
         user = User.objects.create(email='a@b.com')
         user.backend = ''  # required for auth_login to work
         mock_authenticate.return_value = user
+        response = self.client.post('/accounts/login', {'assertion': 'a'})
+        self.assertEqual(response.content.decode(), 'OK')
+
+    @patch('accounts_app.views.authenticate')
+    def test_gets_logged_in_session_if_authenticate_returns_a_user(
+        self, mock_authenticate
+    ):
+        user = User.objects.create(email='a@b.com')
+        user.backend = '' # required for auth_login o work
+        mock_authenticate.return_value = user
         self.client.post('/accounts/login', {'assertion': 'a'})
+<<<<<<< HEAD
         # The Django test client keeps track of the session for its user.
         # For the case where the user gets authenticated successfully, 
         # check that their user ID (the primary key, or pk) is associated
@@ -66,6 +78,8 @@ class LoginViewTest(TestCase):
         user.backend = ''  # required for auth_login to work
         mock_authenticate.return_value = user
         self.client.post('/accounts/login', {'assertion': 'a'})
+=======
+>>>>>>> more_isolation
         self.assertEqual(self.client.session[SESSION_KEY], str(user.pk))
 
     @patch('accounts_app.views.authenticate')
