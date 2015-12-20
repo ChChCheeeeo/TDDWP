@@ -1,7 +1,7 @@
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from lists_app.forms import ExistingListItemForm, ItemForm, NewListForm
-from lists_app.models import Item, List
+from lists_app.models import List #,Item
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -50,24 +50,12 @@ def home_page(request):
 #         # our hardcoded error string
 #         return render(request, 'home.html', {"form": form})
 def new_list(request):
-    form = ItemForm(data=request.POST)
-    if form.is_valid():
-        list_ = form.save(owner=request.user)
-        if request.user.is_authenticated():
-            list_.owner = request.user
-        list_.save()
-        form.save(for_list=list_)
-        return redirect(list_)
-    else:
-        return render(request, 'home.html', {"form": form})
-
-def new_list2(request):
     form = NewListForm(data=request.POST)
     if form.is_valid():
         list_ = form.save(owner=request.user)
         return redirect(list_)
-    return render(request, 'home.html', {'form': form})
-
+    else:
+        return render(request, 'home.html', {"form": form})
 
 # def view_list(request, list_id):
 #     list_ = List.objects.get(id=list_id)

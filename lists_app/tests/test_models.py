@@ -36,7 +36,7 @@ class ItemModelsTest(TestCase):
         list1 = List.objects.create()
         list2 = List.objects.create()
 
-        Item.objects.create(list=list1, text='bla')test_create_returns_new_list_object
+        Item.objects.create(list=list1, text='bla') # test_create_returns_new_list_object
         item = Item(list=list2, text='bla')
         item.full_clean()  # should not raise
     def test_list_ordering(self):

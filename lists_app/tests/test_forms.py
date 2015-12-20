@@ -74,7 +74,7 @@ class NewListFormTest(unittest.TestCase):
             first_item_text='new item text'
         )
 
-    @patch('lists.forms.List.create_new')
+    @patch('lists_app.forms.List.create_new')
     def test_save_creates_new_list_with_owner_if_user_authenticated(
         self, mock_List_create_new
     ):

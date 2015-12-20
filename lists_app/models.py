@@ -10,6 +10,12 @@ class List(models.Model):
         # automagically
         return reverse('view_list', args=[self.id])
 
+
+    @property
+    def name(self):
+        return self.item_set.first().text
+
+
     @staticmethod
     def create_new(first_item_text, owner=None):
         list_ = List.objects.create(owner=owner)
@@ -23,10 +29,6 @@ class Item(models.Model):
 
     def __str__(self):
         return self.text
-
-    @property
-    def name(self):
-        return self.item_set.first().text
 
     class Meta:
         ordering = ('id',)
