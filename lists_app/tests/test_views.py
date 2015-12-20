@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, patch
 from lists_app.forms import ItemForm, EMPTY_ITEM_ERROR
-from lists_app.views import new_list, new_list2
+from lists_app.views import new_list
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
@@ -73,7 +73,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
         # initialises its collaborator,
         # the NewListForm, with the correct constructor—the data
         # from the request.
-        new_list2(self.request)
+        new_list(self.request)
         mockNewListForm.assert_called_once_with(data=self.request.POST)
 
     def test_saves_form_with_owner_if_form_valid(self, mockNewListForm):
@@ -81,7 +81,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
         # It should have an is_valid() function which returns True or False
         # appropriately, based on the input data.
         mock_form.is_valid.return_value = True
-        new_list2(self.request)
+        new_list(self.request)
         # The form should have a .save method which will accept a request.user,
         # which may or may not be a logged-in user, and deal with it
         # appropriately.
@@ -91,7 +91,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
     def test_does_not_save_if_form_invalid(self, mockNewListForm):
         mock_form = mockNewListForm.return_value
         mock_form.is_valid.return_value = False
-        new_list2(self.request)
+        new_list(self.request)
         self.assertFalse(mock_form.save.called)
 
     def test_saving_a_POST_request(self):
@@ -152,7 +152,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
         request = HttpRequest()
         request.user = User.objects.create(email='a@b.com')
         request.POST['text'] = 'new list item'
-        new_list2(request)
+        new_list(request)
         list_ = List.objects.first()
         self.assertEqual(list_.owner, request.user)
 
@@ -166,7 +166,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
         # specify testing case where form is valid
         mock_form.is_valid.return_value = True
 
-        response = new_list2(self.request)
+        response = new_list(self.request)
 
         # check view response is the result of the redirect function.
         self.assertEqual(response, mock_redirect.return_value)
@@ -184,7 +184,7 @@ class NewListViewIntegratedTest(unittest.TestCase):
         mock_form = mockNewListForm.return_value
         mock_form.is_valid.return_value = False
 
-        response = new_list2(self.request)
+        response = new_list(self.request)
 
         self.assertEqual(response, mock_render.return_value)
         # When using assert methods on mocks, like assert_called_ once_with,
