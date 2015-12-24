@@ -1,5 +1,6 @@
+
+# selenium==2.48.0
 Django==1.8.4
 gunicorn==19.3.0
 requests==2.8.1
-selenium==2.48.0
 wheel==0.26.0
