@@ -12,6 +12,9 @@ from datetime import datetime
 SCREEN_DUMP_LOCATION = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'screendumps'
 )
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+binary = FirefoxBinary('/usr/bin/firefox')
+
 
 class FunctionalTest(StaticLiveServerTestCase):
 
@@ -52,7 +55,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Firefox(firefox_binary=binary)
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
