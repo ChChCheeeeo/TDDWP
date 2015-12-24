@@ -13,7 +13,7 @@ SCREEN_DUMP_LOCATION = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'screendumps'
 )
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-binary = FirefoxBinary('/usr/bin/firefox')
+binary = FirefoxBinary()#'/usr/bin/firefox')
 
 
 class FunctionalTest(StaticLiveServerTestCase):
