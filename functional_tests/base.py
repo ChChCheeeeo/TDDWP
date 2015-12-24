@@ -52,7 +52,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome()#Firefox()
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
@@ -73,6 +73,11 @@ class FunctionalTest(StaticLiveServerTestCase):
             if error:
                 return True
         return False
+
+    def take_screenshot(self):
+        filename = self._get_filename() + '.png'
+        print('screenshotting to', filename)
+        self.browser.get_screenshot_as_file(filename)
 
     def dump_html(self):
         filename = self._get_filename() + '.html'
@@ -118,8 +123,3 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.wait_for_element_with_id('id_login')
         navbar = self.browser.find_element_by_css_selector('.navbar')
         self.assertNotIn(email, navbar.text)
-
-    def take_screenshot(self):
-        filename = self._get_filename() + '.png'
-        print('screenshotting to', filename)
-        self.browser.get_screenshot_as_file(filename)
