@@ -57,7 +57,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        self.binary = FirefoxBinary('/usr/bin/firefox', log_file=SCREEN_DUMP_LOCATION)
+        self.binary = FirefoxBinary('/usr/bin/firefox', log_file='./log_file.txt')
         self.browser = webdriver.Firefox(firefox_binary=self.binary)
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
