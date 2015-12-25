@@ -15,7 +15,7 @@ SCREEN_DUMP_LOCATION = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'screendumps'
 )
 DEFAULT_WAIT = 5
-# from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
 class FunctionalTest(StaticLiveServerTestCase):
@@ -57,8 +57,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        # self.binary = FirefoxBinary()#'/usr/bin/firefox')
-        self.browser = webdriver.Firefox()#firefox_binary=self.binary)
+        self.binary = FirefoxBinary('/usr/bin/firefox', log_file=SCREEN_DUMP_LOCATION)
+        self.browser = webdriver.Firefox(firefox_binary=self.binary)
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
