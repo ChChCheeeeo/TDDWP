@@ -1,5 +1,6 @@
 #from django.test import LiveServerTestCase
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import WebDriverException
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from .server_tools import reset_database
@@ -8,10 +9,12 @@ import sys
 
 import os
 from datetime import datetime
+import time
 
-# SCREEN_DUMP_LOCATION = os.path.join(
-#     os.path.dirname(os.path.abspath(__file__)), 'screendumps'
-# )
+SCREEN_DUMP_LOCATION = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'screendumps'
+)
+DEFAULT_WAIT = 5
 # from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
@@ -27,12 +30,12 @@ class FunctionalTest(StaticLiveServerTestCase):
         # which is used to do test setup for the whole class—that means it only
         # gets executed once, rather than before every test method. This is where
         # LiveServerTestCase/StaticLiveServerTestCase usually starts up its test
-        # server. 
+        # server.
         for arg in sys.argv:
             if 'liveserver' in arg:
                 # Instead of just storing cls.server_url, we also store the
                 # server_host and against_staging attributes if we detect the
-                # liveserver command-line argument. 
+                # liveserver command-line argument.
                 cls.server_host = arg.split('=')[1]
                 cls.server_url = 'http://' + cls.server_host
                 cls.against_staging = True
@@ -56,7 +59,7 @@ class FunctionalTest(StaticLiveServerTestCase):
             reset_database(self.server_host)
         # self.binary = FirefoxBinary()#'/usr/bin/firefox')
         self.browser = webdriver.Firefox()#firefox_binary=self.binary)
-        self.browser.implicitly_wait(3)
+        self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
             if self._test_has_failed():
@@ -106,6 +109,17 @@ class FunctionalTest(StaticLiveServerTestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
+
+
+    def wait_for(self, function_with_assertion, timeout=DEFAULT_WAIT):
+            start_time = time.time()
+            while time.time() - start_time < timeout:
+                try:
+                    return function_with_assertion()
+                except (AssertionError, WebDriverException):
+                    time.sleep(0.1)
+            # one more try, which will raise any errors if they are outstanding
+            return function_with_assertion()
 
 
     def wait_for_element_with_id(self, element_id):
