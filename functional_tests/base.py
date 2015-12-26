@@ -57,8 +57,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
-        self.browser = webdriver.Firefox(firefox_binary=self.binary)
+            self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
+            self.browser = webdriver.Firefox(firefox_binary=self.binary)
+        self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
@@ -102,15 +103,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         )
 
 
-    def get_item_input_box(self):
-        return self.browser.find_element_by_id('id_text')
-
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
-
-
     def wait_for(self, function_with_assertion, timeout=DEFAULT_WAIT):
             start_time = time.time()
             while time.time() - start_time < timeout:
@@ -122,6 +114,16 @@ class FunctionalTest(StaticLiveServerTestCase):
             return function_with_assertion()
 
 
+    def get_item_input_box(self):
+        return self.browser.find_element_by_id('id_text')
+
+
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
+
     def wait_for_element_with_id(self, element_id):
         WebDriverWait(self.browser, timeout=30).until(
             lambda b: b.find_element_by_id(element_id),
@@ -129,6 +131,7 @@ class FunctionalTest(StaticLiveServerTestCase):
                 element_id, self.browser.find_element_by_tag_name('body').text
             )
         )
+
 
     def wait_to_be_logged_in(self, email):
         self.wait_for_element_with_id('id_logout')
