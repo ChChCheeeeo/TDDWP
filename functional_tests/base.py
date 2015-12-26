@@ -57,9 +57,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-            self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
-            self.browser = webdriver.Firefox(firefox_binary=self.binary)
-        self.browser = webdriver.Firefox()
+        self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
+        self.browser = webdriver.Firefox(firefox_binary=self.binary)
+        #self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
