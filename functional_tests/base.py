@@ -62,7 +62,8 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.display.start()
             self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
             self.browser = webdriver.Firefox(firefox_binary=self.binary)
-        self.browser = webdriver.Firefox()
+        else:
+            self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
