@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import WebDriverException
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
+from pyvirtualdisplay import Display
 from .server_tools import reset_database
 
 import sys
@@ -57,9 +58,11 @@ class FunctionalTest(StaticLiveServerTestCase):
         if self.against_staging:
             #  resetting the server database in between each test.
             reset_database(self.server_host)
-        self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
-        self.browser = webdriver.Firefox(firefox_binary=self.binary)
-        #self.browser = webdriver.Firefox()
+            self.display = Display(visible=0, size=(800, 600))
+            self.display.start()
+            self.binary = FirefoxBinary('/usr/bin/firefox', log_file=sys.stdout)
+            self.browser = webdriver.Firefox(firefox_binary=self.binary)
+        self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(DEFAULT_WAIT)
 
     def tearDown(self):
@@ -72,6 +75,8 @@ class FunctionalTest(StaticLiveServerTestCase):
                     self.take_screenshot()
                     self.dump_html()
             self.browser.quit()
+            if self.against_staging:
+                self.display.stop()
             super().tearDown()
 
     def _test_has_failed(self):
