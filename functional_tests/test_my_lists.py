@@ -1,5 +1,4 @@
 import time
-from django.conf import settings
 from .base import FunctionalTest
 
 class MyListsTest(FunctionalTest):

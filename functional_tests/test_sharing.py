@@ -20,17 +20,6 @@ class SharingTest(FunctionalTest):
         self.addCleanup(lambda: quit_if_possible(oni_browser))
         self.browser = oni_browser
         self.create_pre_authenticated_session('oniciferous@example.com')
-        
-        # use the "wait-for" pattern whenever to check on the effects of an
-        # interactions triggered
-        self.wait_for(
-            lambda:  self.assertEqual(
-                self.browser.find_element_by_css_selector(
-                    'input[name=email]'
-                ).get_attribute('placeholder'),
-                'your-friend@example.com'
-            )
-        )
 
         # Edith goes to the home page and starts a list
         # self.browser = edith_browser
@@ -60,3 +49,26 @@ class SharingTest(FunctionalTest):
         # She shares her list.
         # The page updates to say that it's shared with Oniciferous:
         list_page.share_list_with('oniciferous@example.com')
+
+        # Oniciferous now goes to the lists page with his browser
+        self.browser = oni_browser
+        HomePage(self).go_to_home_page().go_to_my_lists_page()
+
+        # He sees Edith's list in there!
+        self.browser.find_element_by_link_text('Get help').click()
+
+        # On the list page, Oniciferous can see says that it's Edith's list
+        # use the "wait-for" pattern whenever to check on the effects of an
+        # interactions triggered
+        self.wait_for(lambda: self.assertEqual(
+            list_page.get_list_owner(),
+            'edith@example.com'
+        ))
+
+        # He adds an item to the list
+        list_page.add_new_item('Hi Edith!')
+
+        # When Edith refreshes the page, she sees Oniciferous's addition
+        self.browser = edith_browser
+        self.browser.refresh()
+        list_page.wait_for_new_item_in_list('Hi Edith!', 2)

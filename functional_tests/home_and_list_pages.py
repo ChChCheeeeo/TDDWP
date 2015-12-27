@@ -1,11 +1,14 @@
-    # Page patterns involves having objects represent different pages on
-    # your site, and to be the single place to store information about how
-    # to interact with them.
-    # The idea behind the Page pattern is that it should capture all the
-    # information about a particular page in your site, so that if, later, you want
-    # to go and make changes to that page—even just simple tweaks to its HTML layout
-    # for example—you have a single place to go and look for to adjust your functional
-    # tests, rather than having to dig through dozens of FTs.
+# Page patterns involves having objects represent different pages on
+# your site, and to be the single place to store information about how
+# to interact with them.
+# The idea behind the Page pattern is that it should capture all the
+# information about a particular page in your site, so that if, later, you want
+# to go and make changes to that page—even just simple tweaks to its HTML layout
+# for example—you have a single place to go and look for to adjust your functional
+# tests, rather than having to dig through dozens of FTs.
+
+ITEM_INPUT_ID = 'id_text'
+
 class HomePage(object):
     # Page objects for the home page
     def __init__(self, test):
@@ -28,7 +31,7 @@ class HomePage(object):
 
 
     def get_item_input(self):
-        return self.test.browser.find_element_by_id('id_text')
+        return self.test.browser.find_element_by_id(ITEM_INPUT_ID)
 
 
     def start_new_list(self, item_text):
@@ -48,6 +51,13 @@ class HomePage(object):
         # return the list_page object to the caller
         # because they will probably find it useful
         return list_page
+
+    def go_to_my_lists_page(self):
+        self.test.browser.find_element_by_link_text('My lists').click()
+        self.test.wait_for(lambda: self.test.assertEqual(
+            self.test.browser.find_element_by_tag_name('h1').text,
+            'My Lists'
+        ))
 
 
 class ListPage(object):
@@ -87,3 +97,17 @@ class ListPage(object):
             email,
             [item.text for item in self.get_shared_with_list()]
         ))
+
+
+    def get_item_input(self):
+        return self.test.browser.find_element_by_id(ITEM_INPUT_ID)
+
+
+    def add_new_item(self, item_text):
+        current_pos = len(self.get_list_table_rows())
+        self.get_item_input().send_keys(item_text + '\n')
+        self.wait_for_new_item_in_list(item_text, current_pos + 1)
+
+
+    def get_list_owner(self):
+        return self.test.browser.find_element_by_id('id_list_owner').text
