@@ -6,6 +6,6 @@ jQuery(document).ready(function ($) {
            .has-error.
     */
     $('input').on('keypress', function () {
-        $('.has-error').hide();
+       $('.has-error').hide();
     });
 });
