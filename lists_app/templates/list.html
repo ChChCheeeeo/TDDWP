@@ -29,3 +29,13 @@
         {% endfor %}
     </table>
 {% endblock %}
+
+{% block extra_content %}
+    <div class="col-md-4 col-md-offset-1">
+        <h3>Share this list:</h3>
+        <form class="form-inline" method="POST" action="lists/<list_id>/share">
+            {% csrf_token %}
+            <input name="email" placeholder="your-friend@example.com" />
+        </form>
+     </div>
+{% endblock %}
