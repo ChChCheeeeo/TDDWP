@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.http import HttpRequest
 from lists_app.views import new_list#,home_page
-from django.template.loader import render_to_string
+# from django.template.loader import render_to_string
 
 import unittest
 from unittest.mock import Mock, patch
@@ -264,3 +264,25 @@ class MyListsTest(TestCase):
         correct_user = User.objects.create(email='a@b.com')
         response = self.client.get('/lists/users/a@b.com/')
         self.assertEqual(response.context['owner'], correct_user)
+
+
+class ShareListTest(TestCase):
+
+    def test_sharing_a_list_via_post(self):
+        sharee = User.objects.create(email='share.with@me.com')
+        list_ = List.objects.create()
+        self.client.post(
+            '/lists/%d/share' % (list_.id),
+            {'email': 'share.with@me.com'}
+        )
+        self.assertIn(sharee, list_.shared_with.all())
+
+
+    def test_redirects_after_POST(self):
+        sharee = User.objects.create(email='share.with@me.com')
+        list_ = List.objects.create()
+        response = self.client.post(
+            '/lists/%d/share' % (list_.id),
+            {'email': 'share.with@me.com'}
+        )
+        self.assertRedirects(response, list_.get_absolute_url())

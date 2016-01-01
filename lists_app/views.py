@@ -123,4 +123,7 @@ def my_lists(request, email):
     return render(request, 'my_lists.html', {'owner': owner})
 
 def share_list(request, list_id):
-    pass
+    # find list and redirect to it
+    list_ = List.objects.get(id=list_id)
+    list_.shared_with.add(request.POST['email'])
+    return redirect(list_)

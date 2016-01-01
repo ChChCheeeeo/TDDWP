@@ -18,15 +18,15 @@ class LoginViewTest(TestCase):
         self, mock_authenticate
     ):
         # The decorator adds the mock object as an additional argument to the
-        # function it’s applied to. 
+        # function it’s applied to.
         # It can then onfigure the mock so that it has certain behaviours.
         # Having authenticate return None is the simplest, set the special
         # .return_value attribute. Otherwise it would return another mock,
-        # and that would probably confuse our view. 
+        # and that would probably confuse our view.
         mock_authenticate.return_value = None
         self.client.post('/accounts/login', {'assertion': 'assert this'})
         # Mocks can make assertions. In this case, they can check whether
-        # they were called, and what with. 
+        # they were called, and what with.
         mock_authenticate.assert_called_once_with(assertion='assert this')
 
     @patch('accounts_app.views.authenticate')
@@ -49,11 +49,11 @@ class LoginViewTest(TestCase):
         self.client.post('/accounts/login', {'assertion': 'a'})
 
         # The Django test client keeps track of the session for its user.
-        # For the case where the user gets authenticated successfully, 
+        # For the case where the user gets authenticated successfully,
         # check that their user ID (the primary key, or pk) is associated
-        # with their session. 
+        # with their session.
         self.assertEqual(self.client.session[SESSION_KEY], str(user.pk))
-    
+
     # An alternative way of testing that the Django login function
     # was called correctly would be to mock it out too
     # @patch('accounts_app.views.login')
@@ -76,5 +76,5 @@ class LoginViewTest(TestCase):
         mock_authenticate.return_value = None
         self.client.post('/accounts/login', {'assertion': 'a'})
         # In the case where the user should not be authenticated,
-        # the SESSION_KEY should not appear in their session. 
+        # the SESSION_KEY should not appear in their session.
         self.assertNotIn(SESSION_KEY, self.client.session)
